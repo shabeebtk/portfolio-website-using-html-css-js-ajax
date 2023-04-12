@@ -26,6 +26,9 @@
 
   <!-- Template Main CSS File -->
   <link href="assets/css/style.css" rel="stylesheet">
+
+  <!-- ---ajax link  -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
 
 <body>
@@ -214,7 +217,7 @@
               </p>
             </div>
             <div class="resume-item">
-              <h4>HIGHERN SECONDARY &amp; Graphic Design</h4>
+              <h4>HIGHERN SECONDARY</h4>
               <h5>2019 - 2021</h5>
               <p>
                 PR MEMORIAL HIGHER SECONDARY SCHOOL
@@ -370,7 +373,7 @@
           </div>
 
           <div class="col-lg-7 mt-5 mt-lg-0 d-flex align-items-stretch">
-            <form action="done.html"; method="post" role="form" class="php-email-form" id="form">
+            <form action="done.html"; class="php-email-form" id="submit-form">
               <div class="row">
                 <div class="form-group">
                   <label for="name">Your Name</label>
@@ -385,7 +388,7 @@
               </div>
               <div class="form-group">
                 <label for="name">Phone Number</label>
-                <input type="number" class="form-control" name="subject" id="phone" placeholder="enter your phone">
+                <input type="number" class="form-control" name="phone" id="phone" placeholder="enter your phone">
                 <span id="phone_error" style="color: red;"></span>
               </div>
               <div class="form-group">
@@ -395,7 +398,9 @@
               </div>
               <div class="my-3">
               </div>
-              <div class="text-center"><button type="submit" onclick="return validation()">send message</button></div>
+              <div class="text-center">
+                <button type="submit" value="submit" onclick="return validation()">send message</button>
+              </div>
             </form>
           </div>
 
@@ -410,32 +415,35 @@
 
 
 
-
+   <!-- form validation  -->
   <script>
-
     function validation(){
     var name = document.getElementById('name').value
     var email = document.getElementById('email').value
     var phone = document.getElementById('phone').value
     var message = document.getElementById('message').value
-
+    reg = /^([a-zA-Z0-9\._]+)@([a-zA-Z-Z0-9])+.([a-z]+)(.[a-z]+)?$/;
+    email_result = reg.test(email)
+    
     if(name == ''){
       document.getElementById('name_error').innerHTML = "please enter your name"
       return false
-    }else if(name.length<3){
-      document.getElementById('name_error').innerHTML = " please enter a valid name"
-      return false
     }
+    else if (name.indexOf(" ") >= 0) {
+      document.getElementById('name_error').innerHTML = "dont use spaces"
+    return false;
+    }
+    
     else{
       document.getElementById('name_error').innerHTML = ""
       name = true
     }
 
    
-    if(email == ''){
+    if(email == null){
       document.getElementById('email_error').innerHTML = "please enter your email"
       return false
-    }else if(email.length<5){
+    }else if(email_result == false){
       document.getElementById('email_error').innerHTML = " please enter a valid email"
       return false
     }
@@ -460,20 +468,40 @@
       document.getElementById('message_error').innerHTML = "please enter any message"
       return false
     }else if(message.length<10){
-      document.getElementById('message_error').innerHTML = " please enter atleast 10 characters"
+      document.getElementById('message_error').innerHTML = "message too short!"
       return false
     }
     else{
       document.getElementById('message_error').innerHTML = ""
       message = true
-      setTimeout(function() {window.location = "./page2/done.html" });
+      // setTimeout(function() {window.location = "./page2/done.html" });
     }
-
-   
-
-
   }
   </script>
+
+    <!-- client details sending to g sheet and email   -->
+  <script>
+    $("#submit-form").submit((e)=>{
+        e.preventDefault()
+        $.ajax({
+            url:"https://script.google.com/macros/s/AKfycbw6SEQEyjKxldEYHeM-SOjHnJK_MGbpWyAWlnzb-_TvlE7P4W_mABwU_Yn3ohcKybL0/exec",
+            data:$("#submit-form").serialize(),
+            method:"post",
+            success:function (response){
+                window.location.reload()
+                window.location.href="./page2/done.html"
+            },
+            error:function (err){
+                alert("Something Error")
+
+            }
+        })
+    })
+</script>
+
+<img src="" alt="">
+
+
 
 
 
